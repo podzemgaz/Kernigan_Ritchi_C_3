@@ -2,45 +2,53 @@
 
 #define MAXLINE 1000 /* максимальный размер вводимой строки */
 
-int getline1(char s[], int lim);
-void copy(char to[], char fromf[]);
+int max; /* длина максимальной из просмотренных строк */
+char line[MAXLINE]; /* текущая строка */
+char longest[MAXLINE]; /* самая длинная строка */
+
+int getlinemine(void);
+void copy(void);
 
 /* печать самой длинной строки */
 int main()
 {
-	int len; /* длина текущей строки */
- 	int max; /* длина максимальной из просмотренных строк */
- 	char line[MAXLINE]; /* текущая строка */
- 	char longest[MAXLINE]; /* самая длинная строка */
+ 	int len;
+ 	extern int max;
+ 	extern char longest[];
  	max = 0;
- 	while ((len = getline1(line, MAXLINE)) > 0)
+ 	while ((len = getlinemine()) > 0)
  		if (len > max) {
  	 		max = len;
- 	 		copy(longest, line);
+ 	 		copy();
  	 	}
- 		if (max > 0) /* была ли хоть одна строка? */
- 			printf("%s", longest);
+ 	if (max > 0) /* была ли хоть одна строка? */
+ 		printf("%s", longest);
+
+ 	return 0;
 }
 	
-/* getline: читает строку в s; возвращает длину */
-int getline1(char s[], int lim) {
+/* getline: специализированная версия */
+int getlinemine(void)
+{
 	int c, i;
-	for (i = 0; i < lim-1 && (c = getchar()) != EOF && c != '\n'; ++i) {
-		s[i] = c;
-	}
-	if (c == 'n') {
-		s[i]  = c;
+	extern char line[];
+	for (i=0; i < MAXLINE-1 && (c=getchar()) != EOF && c != '\n'; ++i)
+		line[i] = c;
+	if(c == '\n') {
+		line[i]= c;
 		++i;
 	}
- s[i] = '\0';
- return i;
+	line[i] = '\0';
+	return i;
 }
 
-/* copy: копирует из 'from' в 'to'; to достаточно большой */
-void copy(char to[], char from[]) {
+/* copy: специализированная версия */
+void copy(void) {
 	int i;
+	extern char line[], longest[];
+
 	i = 0;
-	while ((to[i] = from[i]) != '\0') {
+	while ((longest[i] = line[i]) != '\0') {
 		++i;
 	}
 }
